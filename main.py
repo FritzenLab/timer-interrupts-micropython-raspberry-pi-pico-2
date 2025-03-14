@@ -28,14 +28,17 @@ def myFunction(button):
 def led_interrupt(timer):
     if shouldblink == 1:
         led.value(not led.value())
+    else:
+        led.value(0)
 
 if __name__ == "__main__":
     # timer interrupt ideas from here: https://randomnerdtutorials.com/micropython-timer-interrupts-ep32-esp8266/
     tim= Timer(-1)
     tim.init(mode=Timer.PERIODIC, period=200, callback=led_interrupt)
+    button.irq(trigger=Pin.IRQ_RISING, handler=myFunction)
     
     while True:
-        button.irq(trigger=Pin.IRQ_RISING, handler=myFunction)
+        
         
         # non-blocking code from: https://fritzenlab.net/2025/03/11/ds18b20-temperature-sensor-with-micropython/
         if time.ticks_diff(time.ticks_ms(), flowcontroltime) > 200: # this IF will be true every 200 ms
